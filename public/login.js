@@ -30,19 +30,3 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
   }
 });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem("fartLoggedIn", "true");
-      localStorage.setItem("fartCurrentUser", username);
-      alert(`Welcome back, ${username}!`);
-      window.location.href = "index.html";
-    } else {
-      status.innerText = "❌ " + (data.error || "Login failed");
-    }
-  } catch (err) {
-    status.innerText = "❌ Could not connect to server.";
-    console.error(err);
-  }
-});
