@@ -1,11 +1,10 @@
-<!-- public/profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Your Profile – Fartspace</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
@@ -13,18 +12,22 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="upload.html">Upload</a>
-      <button id="logout-btn">Logout</button>
+      <a href="#" onclick="logout(); return false;">Logout</a>
     </nav>
   </header>
 
   <main>
-    <div id="profile-info"></div>
+    <section>
+      <div id="profile-info">
+        <h2>Loading profile...</h2>
+      </div>
 
-    <div>
-      <h3>Upload Profile Picture</h3>
-      <input type="file" id="pic-upload" />
-      <img id="profile-preview" style="display: none;" />
-    </div>
+      <div style="margin-top: 2rem;">
+        <h3>🖼️ Change Profile Picture</h3>
+        <input type="file" id="pic-upload" accept="image/*"><br><br>
+        <img id="profile-preview" src="" alt="Your Profile Pic" style="max-width: 150px; border-radius: 12px; display: none;">
+      </div>
+    </section>
 
     <section>
       <h3>Your Uploaded Farts</h3>
@@ -34,7 +37,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Fartspace | Built by Yuri Valtova and Hayden Sutton</p>
+    <p>&copy; 2025 Fartspace<br>Built by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
   </footer>
 
   <script src="profile.js" defer></script>
