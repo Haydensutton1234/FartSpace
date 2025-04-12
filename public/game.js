@@ -2,16 +2,15 @@ const fart = document.getElementById("fart");
 const scoreEl = document.getElementById("score");
 const timeEl = document.getElementById("time");
 const bestEl = document.getElementById("best-score");
-const startButton = document.getElementById("start-button");
+const startBtn = document.getElementById("start-button");
 
 let score = 0;
 let timeLeft = 30;
 let gameInterval, timerInterval;
 
-// 💾 Load personal best
+fart.style.display = "none";
 bestEl.textContent = localStorage.getItem("fartGameBest") || 0;
 
-// 🎯 Start Game
 function startGame() {
   score = 0;
   timeLeft = 30;
@@ -28,7 +27,6 @@ function startGame() {
   }, 1000);
 }
 
-// 🧠 Move fart to random location
 function moveFart() {
   const area = document.getElementById("game-area");
   const maxX = area.clientWidth - 50;
@@ -37,7 +35,6 @@ function moveFart() {
   fart.style.top = Math.random() * maxY + "px";
 }
 
-// 💾 End game + record score
 function endGame() {
   clearInterval(gameInterval);
   clearInterval(timerInterval);
@@ -64,12 +61,10 @@ function endGame() {
   }
 }
 
-// 💨 Fart click handler
 fart.onclick = () => {
   score++;
   scoreEl.textContent = score;
   moveFart();
 };
 
-// 🚀 Start button
-startButton.onclick = () => startGame();
+startBtn.addEventListener("click", startGame);
