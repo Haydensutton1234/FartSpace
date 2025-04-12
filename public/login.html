@@ -14,11 +14,13 @@
       <a href="register.html">Register</a>
       <a href="upload.html">Upload</a>
       <a href="profile.html">Profile</a>
+      <a href="game.html">Game</a>
+      <a href="ambassadors.html">Ambassadors</a>
     </nav>
   </header>
 
   <main>
-    <form onsubmit="loginUser(event)">
+    <form id="login-form">
       <label for="login-username">Username:</label><br>
       <input type="text" id="login-username" required><br><br>
 
@@ -37,25 +39,38 @@
   </footer>
 
   <script>
-    function loginUser(e) {
+    const form = document.getElementById("login-form");
+    const status = document.getElementById("login-status");
+    const apiBase = window.location.origin; // Works on Render & localhost
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const inputUser = document.getElementById("login-username").value.trim();
-      const inputPass = document.getElementById("login-password").value.trim();
-      const statusEl = document.getElementById("login-status");
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
 
-      const users = JSON.parse(localStorage.getItem("fartUsers") || "[]");
-      const match = users.find(user => user.username === inputUser && user.password === inputPass);
+      try {
+        const res = await fetch(`${apiBase}/api/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-      if (match) {
-        localStorage.setItem("fartLoggedIn", "true");
-        localStorage.setItem("fartCurrentUser", inputUser);
-        alert(`Welcome back, ${inputUser}!`);
-        window.location.href = "index.html";
-      } else {
-        statusEl.innerText = "❌ Incorrect username or password.";
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem("fartLoggedIn", "true");
+          localStorage.setItem("fartCurrentUser", username);
+          alert(`Welcome back, ${username}!`);
+          window.location.href = "index.html";
+        } else {
+          status.innerText = "❌ " + (data.error || "Login failed");
+        }
+      } catch (err) {
+        status.innerText = "❌ Could not connect to server.";
+        console.error(err);
       }
-    }
+    });
   </script>
 </body>
 </html>
