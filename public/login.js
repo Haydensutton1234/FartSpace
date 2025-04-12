@@ -8,6 +8,11 @@ form.addEventListener("submit", async (e) => {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value.trim();
 
+  if (!username || !password) {
+    status.innerText = "❌ Username and password are required.";
+    return;
+  }
+
   try {
     const res = await fetch(`${apiBase}/api/login`, {
       method: "POST",
