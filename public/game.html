@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catch the Fart – Fartspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0e0e0e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #ffcc00;
+      margin-bottom: 1rem;
+    }
+
+    #game-area {
+      position: relative;
+      width: 90vw;
+      max-width: 600px;
+      height: 400px;
+      background: #1a1a1a;
+      border: 2px solid #333;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    #fart {
+      position: absolute;
+      font-size: 2.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .score {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      background: #ffcc00;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ffaa00;
+    }
+
+    nav {
+      margin-top: 2rem;
+    }
+
+    nav a {
+      color: #ffcc00;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+
+    p {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>💨 Catch the Fart!</h1>
+
+  <div class="score">
+    Score: <span id="score">0</span> | Time: <span id="time">30</span>s
+  </div>
+
+  <div id="game-area">
+    <div id="fart">💨</div>
+  </div>
+
+  <button onclick="startGame()">Start Game</button>
+
+  <p>Best Score: <span id="best-score">0</span></p>
+
+  <nav>
+    <a href="index.html">⬅ Back to Fartspace</a>
+  </nav>
+
+  <script>
+    const fart = document.getElementById("fart");
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+    const bestEl = document.getElementById("best-score");
+
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval, timerInterval;
+
+    fart.style.display = "none";
+    bestEl.textContent = localStorage.getItem("fartGameBest") || 0;
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreEl.textContent = score;
+      timeEl.textContent = timeLeft;
+      fart.style.display = "block";
+      moveFart();
+
+      gameInterval = setInterval(() => moveFart(), 800);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function moveFart() {
+      const area = document.getElementById("game-area");
+      const maxX = area.clientWidth - 50;
+      const maxY = area.clientHeight - 50;
+      fart.style.left = Math.random() * maxX + "px";
+      fart.style.top = Math.random() * maxY + "px";
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      clearInterval(timerInterval);
+      fart.style.display = "none";
+
+      const name = localStorage.getItem("fartCurrentUser") || "Anonymous";
+      const leaderboard = JSON.parse(localStorage.getItem("fartGameScores") || "[]");
+
+      leaderboard.push({
+        name,
+        score,
+        time: new Date().toISOString()
+      });
+
+      localStorage.setItem("fartGameScores", JSON.stringify(leaderboard));
+
+      const best = parseInt(localStorage.getItem("fartGameBest") || "0");
+      if (score > best) {
+        localStorage.setItem("fartGameBest", score);
+        bestEl.textContent = score;
+        alert("💥 New High Score!");
+      } else {
+        alert("Game Over! Your score: " + score);
+      }
+    }
+
+    fart.onclick = () => {
+      score++;
+      scoreEl.textContent = score;
+      moveFart();
+    };
+  </script>
+</body>
+</html>
+

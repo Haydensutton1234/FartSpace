@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Profile – Fartspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>👤 Your Fartspace Profile</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="upload.html">Upload</a>
+      <a href="#" onclick="logout(); return false;">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <div id="profile-info">
+        <h2>Loading profile...</h2>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <h3>Change Profile Picture</h3>
+        <input type="file" id="profile-pic-input" accept="image/png, image/jpeg, image/gif">
+        <p id="pic-status"></p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Your Uploaded Farts</h3>
+      <p id="fart-count"></p>
+      <div id="user-fart-list">
+        <!-- User farts will render here -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fartspace<br>Made by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
+  </footer>
+
+  <script>
+    const currentUser = localStorage.getItem('fartCurrentUser');
+    const isLoggedIn = localStorage.getItem('fartLoggedIn') === 'true';
+
+    if (!currentUser || !isLoggedIn) {
+      alert("You must be logged in to view your profile.");
+      window.location.href = "login.html";
+    } else {
+      let users = JSON.parse(localStorage.getItem('fartUsers') || '[]');
+      const userIndex = users.findIndex(u => u.username === currentUser);
+      const current = users[userIndex];
+      const infoDiv = document.getElementById('profile-info');
+
+      let profilePic = current.profilePic
+        ? `<img src="${current.profilePic}" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #ffcc00; margin-bottom: 1rem;">`
+        : `<p><em>No profile picture set.</em></p>`;
+
+      infoDiv.innerHTML = `
+        ${profilePic}
+        <h2>Welcome, <strong>${current.username}</strong>!</h2>
+        <p>Member since: ${new Date(current.created).toDateString()}</p>
+      `;
+
+      // Render uploaded farts
+      const allFarts = JSON.parse(localStorage.getItem('fartspaceFarts') || '[]');
+      const userFarts = allFarts.filter(f => f.author === current.username);
+      document.getElementById("fart-count").innerText = `Total Uploads: ${userFarts.length}`;
+
+      const fartList = document.getElementById('user-fart-list');
+      if (userFarts.length === 0) {
+        fartList.innerHTML = `<p>You haven't uploaded any farts yet... get clappin'.</p>`;
+      } else {
+        userFarts.forEach((fart, index) => {
+          const container = document.createElement('div');
+          container.classList.add("fart-post");
+          container.innerHTML = `
+            <h4>${fart.title}</h4>
+            <p>${fart.desc || "No description"}</p>
+            ${fart.type === "video"
+              ? `<video controls><source src="${fart.file}" type="video/mp4"></video>`
+              : `<audio controls><source src="${fart.file}" type="audio/mpeg"></audio>`}
+            <p>Uploaded: ${new Date(fart.timestamp).toLocaleString()}</p>
+          `;
+          fartList.appendChild(container);
+        });
+      }
+
+      // Profile picture upload logic
+      const picInput = document.getElementById("profile-pic-input");
+      const picStatus = document.getElementById("pic-status");
+
+      picInput.addEventListener("change", function () {
+        const file = picInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function () {
+          current.profilePic = reader.result;
+          users[userIndex] = current;
+          localStorage.setItem("fartUsers", JSON.stringify(users));
+          picStatus.innerText = "✅ Profile picture updated!";
+          setTimeout(() => window.location.reload(), 1000);
+        };
+
+        reader.onerror = function () {
+          picStatus.innerText = "❌ Failed to read image file.";
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("fartLoggedIn");
+      localStorage.removeItem("fartCurrentUser");
+      alert("You've been logged out.");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Ignore big-ass folders and unnecessary stuff
+Oracle_JDK-23/
+node_modules/
+.DS_Store
+.env
+*.log

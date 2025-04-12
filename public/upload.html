@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload to Fartspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>📤 Upload to Fartspace</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="upload.html">Upload</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <form id="upload-form">
+      <label for="fart-title">Title:</label><br>
+      <input type="text" id="fart-title" required><br><br>
+
+      <label for="fart-desc">Description (optional):</label><br>
+      <textarea id="fart-desc" rows="4" cols="50"></textarea><br><br>
+
+      <label for="fart-audio">Upload Audio (.mp3):</label><br>
+      <input type="file" id="fart-audio" accept=".mp3"><br><br>
+
+      <label for="fart-video">Upload Video (.mp4, .webm):</label><br>
+      <input type="file" id="fart-video" accept="video/mp4, video/webm"><br><br>
+
+      <button type="submit">Upload This Masterpiece</button>
+    </form>
+
+    <p id="upload-status"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fartspace<br>Made by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const status = document.getElementById("upload-status");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const title = document.getElementById("fart-title").value.trim();
+      const desc = document.getElementById("fart-desc").value.trim();
+      const audioFile = document.getElementById("fart-audio").files[0];
+      const videoFile = document.getElementById("fart-video").files[0];
+      const user = localStorage.getItem("fartCurrentUser") || "Anonymous";
+
+      if (!audioFile && !videoFile) {
+        status.innerText = "❌ You need to upload at least one file (audio or video)";
+        return;
+      }
+
+      // Use FileReader to convert to base64
+      const reader = new FileReader();
+      const fart = {
+        title,
+        desc,
+        author: user,
+        timestamp: new Date().toISOString(),
+        likes: 0
+      };
+
+      // Decide what kind of file we're handling
+      const fileToRead = videoFile || audioFile;
+      const isVideo = !!videoFile;
+      fart.type = isVideo ? "video" : "audio";
+
+      reader.onload = function () {
+        fart.file = reader.result;
+
+        const farts = JSON.parse(localStorage.getItem("fartspaceFarts") || "[]");
+        farts.push(fart);
+        localStorage.setItem("fartspaceFarts", JSON.stringify(farts));
+
+        status.innerText = `✅ "${title}" uploaded successfully!`;
+        form.reset();
+      };
+
+      reader.onerror = function () {
+        status.innerText = "❌ Failed to read file!";
+      };
+
+      reader.readAsDataURL(fileToRead);
+    });
+  </script>
+</body>
+</html>

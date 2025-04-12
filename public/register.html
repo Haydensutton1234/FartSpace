@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register – Fartspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>📝 Register for Fartspace</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="upload.html">Upload</a>
+      <a href="profile.html">Profile</a>
+      <a href="ambassadors.html">Ambassadors</a>
+    </nav>
+  </header>
+
+  <main>
+    <form onsubmit="registerUser(event)">
+      <label for="reg-username">Choose a Username:</label><br>
+      <input type="text" id="reg-username" required oninput="checkUsername()"><br>
+      <p id="username-check" style="font-size: 0.9rem; margin-bottom: 1rem;"></p>
+
+      <label for="reg-password">Choose a Password:</label><br>
+      <input type="password" id="reg-password" required><br><br>
+
+      <button type="submit">Sign Up and Blow 'Em Away</button>
+    </form>
+
+    <p id="register-status"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fartspace<br>
+    Made by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
+  </footer>
+
+  <script>
+    function checkUsername() {
+      const input = document.getElementById("reg-username");
+      const check = document.getElementById("username-check");
+      const username = input.value.trim().toLowerCase();
+      const users = JSON.parse(localStorage.getItem("fartUsers") || "[]");
+
+      const exists = users.find(u => u.username.toLowerCase() === username);
+      if (exists) {
+        check.style.color = "#ff66cc";
+        check.innerText = "❌ That username is already taken.";
+        input.setAttribute("data-duplicate", "true");
+      } else {
+        if (username.length >= 3) {
+          check.style.color = "#66ff99";
+          check.innerText = "✅ This name is available.";
+        } else {
+          check.style.color = "#bbb";
+          check.innerText = "Username must be at least 3 characters.";
+        }
+        input.setAttribute("data-duplicate", "false");
+      }
+    }
+
+    function registerUser(e) {
+      e.preventDefault();
+
+      const username = document.getElementById("reg-username").value.trim();
+      const password = document.getElementById("reg-password").value.trim();
+      const statusEl = document.getElementById("register-status");
+
+      // Block duplicate usernames
+      const input = document.getElementById("reg-username");
+      if (input.getAttribute("data-duplicate") === "true") {
+        statusEl.innerText = "❌ That username is already taken. Try another.";
+        return;
+      }
+
+      if (username.length < 3 || !password) {
+        statusEl.innerText = "❌ Username and password are required.";
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("fartUsers") || "[]");
+
+      const newUser = {
+        username,
+        password,
+        created: new Date().toISOString()
+      };
+
+      users.push(newUser);
+      localStorage.setItem("fartUsers", JSON.stringify(users));
+
+      // 💫 Ambassador logic
+      let ambassadors = JSON.parse(localStorage.getItem("fartAmbassadors") || "[]");
+      if (ambassadors.length < 15 && !ambassadors.includes(username)) {
+        ambassadors.push(username);
+        localStorage.setItem("fartAmbassadors", JSON.stringify(ambassadors));
+      }
+
+      alert("✅ Registration complete! Redirecting to login...");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – Fartspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🔑 Login to Fartspace</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="register.html">Register</a>
+      <a href="upload.html">Upload</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <form onsubmit="loginUser(event)">
+      <label for="login-username">Username:</label><br>
+      <input type="text" id="login-username" required><br><br>
+
+      <label for="login-password">Password:</label><br>
+      <input type="password" id="login-password" required><br><br>
+
+      <button type="submit">Let Me In</button>
+    </form>
+
+    <p id="login-status"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fartspace<br>
+    Made by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
+  </footer>
+
+  <script>
+    function loginUser(e) {
+      e.preventDefault();
+
+      const inputUser = document.getElementById("login-username").value.trim();
+      const inputPass = document.getElementById("login-password").value.trim();
+      const statusEl = document.getElementById("login-status");
+
+      const users = JSON.parse(localStorage.getItem("fartUsers") || "[]");
+      const match = users.find(user => user.username === inputUser && user.password === inputPass);
+
+      if (match) {
+        localStorage.setItem("fartLoggedIn", "true");
+        localStorage.setItem("fartCurrentUser", inputUser);
+        alert(`Welcome back, ${inputUser}!`);
+        window.location.href = "index.html";
+      } else {
+        statusEl.innerText = "❌ Incorrect username or password.";
+      }
+    }
+  </script>
+</body>
+</html>

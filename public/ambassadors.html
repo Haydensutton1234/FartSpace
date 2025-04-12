@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fartspace Ambassadors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>👑 Fartspace Ambassadors</h1>
+    <p class="tagline">The first 15 brave cheeks to step into history.</p>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="upload.html">Upload</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>🚀 Hall of Fart Pioneers</h2>
+      <ul id="ambassador-list">
+        <!-- Ambassador usernames will be listed here -->
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fartspace<br>
+    Made by <strong>Yuri Valtova</strong> and <strong>Hayden Sutton</strong></p>
+  </footer>
+
+  <script>
+    const list = document.getElementById('ambassador-list');
+    const ambassadors = JSON.parse(localStorage.getItem("fartAmbassadors") || "[]");
+
+    if (ambassadors.length === 0) {
+      list.innerHTML = "<li>No ambassadors yet... be the first cheek in the wind.</li>";
+    } else {
+      ambassadors.forEach((username, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `#${index + 1}: <strong>${username}</strong>`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
