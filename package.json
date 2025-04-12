@@ -1,0 +1,30 @@
+{
+  "name": "fartspace",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "corepack": "^0.31.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "npm": "^10.9.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haydensutton1234/FartSpace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Haydensutton1234/FartSpace/issues"
+  },
+  "homepage": "https://github.com/Haydensutton1234/FartSpace#readme",
+  "description": ""
+}
